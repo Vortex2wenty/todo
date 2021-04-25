@@ -23,6 +23,17 @@ aside {
   background: #93a1a1;
 }
 
+.projects-list {
+  color: white;
+}
+
+.add-project-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: white;
+}
+
 img {
     background: linear-gradient(0deg, #00000038 30%, #ffffff44 100%);
     margin: 10px;
