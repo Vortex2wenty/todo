@@ -18,7 +18,11 @@ const Project = (title) => {
     todos[index].comment = comment;
   };
 
-  return { addTodo, getTodos, editTodo, title };
+  const deleteTodo = (index) => {
+    delete todos[index];
+  };
+
+  return { addTodo, getTodos, editTodo, deleteTodo, title };
 };
 
 export default Project;  
