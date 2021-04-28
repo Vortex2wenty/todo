@@ -7,6 +7,7 @@
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
     <script src="main.js"></script>
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -19,12 +20,12 @@
     <main>
       <article>
         <aside>
-          <ul class='projects-list'>
+          <ul class="nav flex-column projects-list">
           </ul>
           <button type="button" class="btn btn-primary btn-add-project" data-bs-toggle="modal" data-bs-target="#projectModal">Add Project</button>
         </aside>
-        <section class='todos-list'>
-          <ul>
+        <section>
+          <ul class='nav flex-column todos-list'>
           </ul>
           <button type="button" class="btn btn-primary btn-add-todo" data-bs-toggle="modal" data-bs-target="#todoModal">Add Todo</button>
         </section>
@@ -62,19 +63,85 @@
                   <form class='form-add-todo'>
                     <div class="mb-3">
                       <label for="add-todo-name" class="form-label">Name</label>
-                      <input type="text" class="form-control" id="add-todo-name" placeholder="My todo">
+                      <input type="text" class="form-control" id="add-todo-name" placeholder="Groceries">
                     </div>
                     <div class="mb-3">
                       <label for="add-todo-description" class="form-label">Description</label>
-                      <input type="text" class="form-control" id="add-todo-description" placeholder="This is my new todo item.">
+                      <input type="text" class="form-control" id="add-todo-description" placeholder="Finish the groceries before the wife gets mad.">
                     </div>
                     <div class="mb-3">
                       <label for="add-todo-duedate" class="form-label">Due Date</label>
                       <input type="date" class="form-control" id="add-todo-duedate">
                     </div>
+                    <div class="mb-3">
+                      <label for="add-todo-priority" class="form-label">Priority</label>
+                      <input type="range" class="form-range" id="add-todo-priority" min='0' max='3'>
+                      <output id='todo-priority-output' for='add-todo-priority'></output>
+                    </div>
+                    <div class="mb-3">
+                      <label for="add-todo-comment" class="form-label">Comment</label>
+                      <input type="text" class="form-control" id="add-todo-comment" placeholder="Grocery list: Bananas, Apple, Kiwi, Milk">
+                    </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                       <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                  </form>
+                </div>
+                
+              </div>
+            </div>
+        </div>
+        <div class="modal fade" id="showTodoModal" tabindex="-1" aria-labelledby="showTodoModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="editTodoModal" tabindex="-1" aria-labelledby="editTodoModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="editTodoModalLabel">Edit project</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form class='form-edit-todo'>
+                    <div class="mb-3">
+                      <label for="edit-todo-name" class="form-label">Name</label>
+                      <input type="text" class="form-control" id="edit-todo-name" placeholder="Groceries">
+                    </div>
+                    <div class="mb-3">
+                      <label for="edit-todo-description" class="form-label">Description</label>
+                      <input type="text" class="form-control" id="edit-todo-description" placeholder="Finish the groceries before the wife gets mad.">
+                    </div>
+                    <div class="mb-3">
+                      <label for="edit-todo-duedate" class="form-label">Due Date</label>
+                      <input type="date" class="form-control" id="edit-todo-duedate">
+                    </div>
+                    <div class="mb-3">
+                      <label for="edit-todo-priority" class="form-label">Priority</label>
+                      <input type="range" class="form-range" id="edit-todo-priority" min='0' max='3'>
+                      <output id='edit-todo-priority-output' for='edit-todo-priority'></output>
+                    </div>
+                    <div class="mb-3">
+                      <label for="edit-todo-comment" class="form-label">Comment</label>
+                      <input type="text" class="form-control" id="edit-todo-comment" placeholder="Grocery list: Bananas, Apple, Kiwi, Milk">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-primary">Edit</button>
                     </div>
                   </form>
                 </div>
