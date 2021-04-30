@@ -5,8 +5,10 @@ const DOM = (() => {
   let projects = [];
   const defaultProject = Project('Default');
   let currentProject;
+  let localStorageProjects = [];
 
   const init = () => {
+    saveToStorage();
     initProjectForm();
     initTodoForm();
     defaultProject.addTodo('Test', 'This is a test todo!', new Date(), 1, 'A comment on the todo!');
@@ -21,8 +23,38 @@ const DOM = (() => {
       e.preventDefault();
       const newProject = Project(document.querySelector('#add-project-name').value);
       addProject(newProject);
+      saveToStorage();
       displayProjectsList();
     });
+  };
+
+  const saveToStorage = () => {
+    let formattedProjects = [];
+    for (const project of projects) {
+      let formattedProject = {
+        title: project.getTitle(),
+        todos: project.getTodos(),
+      };
+      formattedProjects.push(formattedProject);
+    }
+    if (!(localStorage.getItem('projects'))) {
+      localStorage.setItem('projects', JSON.stringify(formattedProjects));
+    } else {
+      localStorageProjects = JSON.parse(localStorage.getItem('projects'));
+      localStorage.setItem('projects', localStorage.getItem('projects').concat(JSON.stringify(formattedProjects)));
+      localStorageProjects = JSON.parse(localStorage.getItem('projects'));
+      // projects = JSON.parse(localStorage.getItem('projects'));
+      projects = [];
+      localStorageProjects.forEach((value, index) => {
+        let newProject = Project(value.title);
+        addProject(newProject);
+        value.todos.forEach((value) => {
+          if (value !== null) {
+            projects[index].addTodo(value.title, value.description, new Date(value.dueDate), value.priority, value.comment);
+          }
+        });
+      });
+    }
   };
 
   const initTodoForm = () => {
@@ -39,6 +71,7 @@ const DOM = (() => {
                        +document.querySelector('#add-todo-priority').value,
                        document.querySelector('#add-todo-comment').value];
       projects[currentProject].addTodo(...newTodo);
+      saveToStorage();
       displayProjectContent(currentProject);
     });
   };
@@ -65,6 +98,7 @@ const DOM = (() => {
                        +document.querySelector('#edit-todo-priority').value,
                        document.querySelector('#edit-todo-comment').value];
       projects[currentProject].editTodo(...editedTodo);
+      saveToStorage();
       displayProjectContent(currentProject);
     });
   };
@@ -74,6 +108,7 @@ const DOM = (() => {
   };
 
   const displayProjectsList = () => {
+    saveToStorage();
     const projectsList = document.querySelector('.projects-list');
     projectsList.innerHTML = '';
     projects.forEach((value, index) => {
@@ -158,6 +193,7 @@ const DOM = (() => {
       });
       deleteTodoLink.addEventListener('click', (e) => {
         projects[currentProject].deleteTodo(todoIndex);
+        saveToStorage();
         displayProjectContent(currentProject);
       });
     });

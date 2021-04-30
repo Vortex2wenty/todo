@@ -1,13 +1,16 @@
 import Todo from './todo';
 // for new object Project (made with factory function):
-const Project = (title) => {
-  let todos = [];
+const Project = (title, todos = []) => {
   const addTodo = (title, description, dueDate = '', priority = 0, comment = '') => {
     todos.push(Todo(title, description, dueDate, priority, comment));
   };
 
   const getTodos = () => {
     return todos;
+  };
+
+  const getTitle = () => {
+    return title;
   };
 
   const editTodo = (index, title, description, dueDate = '', priority = 0, comment = '')=> {
@@ -22,7 +25,7 @@ const Project = (title) => {
     delete todos[index];
   };
 
-  return { addTodo, getTodos, editTodo, deleteTodo, title };
+  return { addTodo, getTodos, editTodo, deleteTodo, getTitle };
 };
 
 export default Project;  
