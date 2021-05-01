@@ -1,20 +1,20 @@
-import { th } from 'date-fns/locale';
+import { formatRelative } from 'date-fns'
 import Project from './project';
 
 const DOM = (() => {
   let projects = [];
-  const defaultProject = Project('Default');
   let currentProject;
-  let localStorageProjects = [];
 
   const init = () => {
+    if (localStorage.getItem('projects') === null) {
+      localStorage.setItem('projects', '[{"title":"Default","todos":[{"title":"Test","description":"This is a test todo!","dueDate":"2021-05-01T10:00:07.973Z","priority":1,"comment":"A comment on the todo!"}]}]');
+    }
+    getStorage();
     saveToStorage();
     initProjectForm();
     initTodoForm();
-    defaultProject.addTodo('Test', 'This is a test todo!', new Date(), 1, 'A comment on the todo!');
-    addProject(defaultProject);
     displayProjectsList();
-    displayProjectContent(projects.indexOf(defaultProject));
+    displayProjectContent(0);
   };
 
   const initProjectForm = () => {
@@ -37,24 +37,20 @@ const DOM = (() => {
       };
       formattedProjects.push(formattedProject);
     }
-    if (!(localStorage.getItem('projects'))) {
-      localStorage.setItem('projects', JSON.stringify(formattedProjects));
-    } else {
-      localStorageProjects = JSON.parse(localStorage.getItem('projects'));
-      localStorage.setItem('projects', localStorage.getItem('projects').concat(JSON.stringify(formattedProjects)));
-      localStorageProjects = JSON.parse(localStorage.getItem('projects'));
-      // projects = JSON.parse(localStorage.getItem('projects'));
-      projects = [];
-      localStorageProjects.forEach((value, index) => {
-        let newProject = Project(value.title);
-        addProject(newProject);
-        value.todos.forEach((value) => {
-          if (value !== null) {
-            projects[index].addTodo(value.title, value.description, new Date(value.dueDate), value.priority, value.comment);
-          }
-        });
+    localStorage.setItem('projects', JSON.stringify(formattedProjects)  );
+  };
+
+  const getStorage = () => {
+    projects = [];
+    JSON.parse(localStorage.getItem('projects')).forEach((value, index) => {
+      let newProject = Project(value.title);
+      addProject(newProject);
+      value.todos.forEach((value) => {
+        if (value !== null) {
+          projects[index].addTodo(value.title, value.description, new Date(value.dueDate), value.priority, value.comment);
+        }
       });
-    }
+    });
   };
 
   const initTodoForm = () => {
@@ -72,6 +68,7 @@ const DOM = (() => {
                        document.querySelector('#add-todo-comment').value];
       projects[currentProject].addTodo(...newTodo);
       saveToStorage();
+      getStorage();
       displayProjectContent(currentProject);
     });
   };
@@ -84,7 +81,7 @@ const DOM = (() => {
     const editTodoModal = document.querySelector('#editTodoModal');
     editTodoModal.querySelector('#edit-todo-name').value = todo.title;
     editTodoModal.querySelector('#edit-todo-description').value = todo.description;
-    editTodoModal.querySelector('#edit-todo-duedate').value = `${todo.dueDate.getUTCFullYear()}-${todo.dueDate.getUTCMonth() < 10 ? '0' + [todo.dueDate.getUTCMonth() + 1] : todo.dueDate.getUTCMonth() + 1}-${todo.dueDate.getUTCDate()}`;
+    editTodoModal.querySelector('#edit-todo-duedate').value = `${todo.dueDate.toUTCString()}`;
     editTodoModal.querySelector('#edit-todo-priority').value = todo.priority;
     editTodoModal.querySelector('#edit-todo-priority-output').textContent = todo.priority;
     editTodoModal.querySelector('#edit-todo-comment').value = todo.comment;
@@ -99,6 +96,7 @@ const DOM = (() => {
                        document.querySelector('#edit-todo-comment').value];
       projects[currentProject].editTodo(...editedTodo);
       saveToStorage();
+      getStorage();
       displayProjectContent(currentProject);
     });
   };
@@ -109,13 +107,14 @@ const DOM = (() => {
 
   const displayProjectsList = () => {
     saveToStorage();
+    getStorage();
     const projectsList = document.querySelector('.projects-list');
     projectsList.innerHTML = '';
     projects.forEach((value, index) => {
       const projectListItem = document.createElement('li');
       projectListItem.classList.add('nav-item');
       const projectListLink = document.createElement('a');
-      projectListLink.textContent = value.title;
+      projectListLink.textContent = value.getTitle();
       projectListLink.classList.add('nav-link');
       projectListLink.setAttribute('href', '#');
       projectListItem.appendChild(projectListLink);
@@ -175,7 +174,9 @@ const DOM = (() => {
         const description = document.createElement('h3');
         description.textContent = `Description: ${value.description}`;
         const dueDate = document.createElement('h3');
-        dueDate.textContent = `Due: ${value.dueDate.toUTCString()}`;
+        let relativeDate = new Date(value.dueDate.toUTCString());
+        relativeDate = formatRelative(relativeDate, new Date());
+        dueDate.textContent = `Due: ${relativeDate}`;
         const priority = document.createElement('h3');
         priority.textContent = `Priority: ${value.priority}`;
         priority.classList.add(priorityType);
@@ -199,11 +200,9 @@ const DOM = (() => {
     });
   };
 
-  return { init, defaultProject };
+  return { init };
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
   DOM.init();
-  console.log(DOM);
-  console.log(DOM.defaultProject.getTodos());
 });
